@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select WATI Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+        select {
+            padding: 8px;
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            margin-top: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+    <script>
+        async function loadTemplates() {
+            try {
+                console.log("Fetching templates...");
+                
+                // Replace with your NinzaHost backend URL
+                const BACKEND_URL = "http://127.0.0.1:5500/index.html";  
+                
+                // Fetch template data from Flask backend running on NinzaHost
+                const response = await fetch(`${BACKEND_URL}/get-templates`);  
+                console.log("response", response);
+                console.log("Response status:", response.status);
+
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+
+                const data = await response.json();
+                console.log("Received data:", data);
+
+                const templateDropdown = document.getElementById("templates");
+                templateDropdown.innerHTML = '<option value="">-- Select a Template --</option>';
+
+                // Populate dropdown with template names
+                data.templates.forEach(template => {
+                    let option = document.createElement("option");
+                    option.value = template.id;
+                    option.textContent = template.name;
+                    templateDropdown.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error("Error fetching templates:", error);
+            }
+        }
+
+        function showSelectedTemplate() {
+            const selectedTemplate = document.getElementById("templates");
+            const selectedText = selectedTemplate.options[selectedTemplate.selectedIndex].text;
+            document.getElementById("selectedTemplate").innerText = "Selected Template: " + selectedText;
+        }
+
+        async function sendMessage() {
+            const selectedTemplate = document.getElementById("templates").value;
+            if (!selectedTemplate) {
+                alert("Please select a template first!");
+                return;
+            }
+
+        //     const BACKEND_URL = "https://crmbymjservices.com";  
+        //     try {
+        //         const response = await fetch(`${BACKEND_URL}/send-message`, {
+        //             method: "POST",
+        //             headers: { "Content-Type": "application/json" },
+        //             body: JSON.stringify({ template_id: selectedTemplate })
+        //         });
+
+        //         const result = await response.json();
+        //         alert(result.message || "Message sent successfully!");
+        //     } catch (error) {
+        //         console.error("Error sending message:", error);
+        //         alert("Failed to send message!");
+        //     }
+        }
+
+        // Run the function when the page loads
+        document.addEventListener("DOMContentLoaded", loadTemplates);
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Available WATI Templates</h2>
+        <label for="templates">Select a Template:</label>
+        <select id="templates" onchange="showSelectedTemplate()">
+            <option value="">-- Select a Template --</option>
+        </select>
+        <p id="selectedTemplate"></p>
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</body>
+</html>
