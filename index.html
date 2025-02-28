@@ -36,16 +36,13 @@
         }
     </style>
     <script>
+        const VERCEL_BACKEND_URL = "https://wati-sendbutton-bf564gg73-shubhangis-projects-2553fb3e.vercel.app/";  // ✅ Replace with your actual Vercel backend URL
+
         async function loadTemplates() {
             try {
                 console.log("Fetching templates...");
-                
-                // Replace with your NinzaHost backend URL
-                const BACKEND_URL = "http://127.0.0.1:5500/index.html";  
-                
-                // Fetch template data from Flask backend running on NinzaHost
-                const response = await fetch(`${BACKEND_URL}/get-templates`);  
-                console.log("response", response);
+
+                const response = await fetch(`${VERCEL_BACKEND_URL}/get-templates`);
                 console.log("Response status:", response.status);
 
                 if (!response.ok) {
@@ -58,7 +55,6 @@
                 const templateDropdown = document.getElementById("templates");
                 templateDropdown.innerHTML = '<option value="">-- Select a Template --</option>';
 
-                // Populate dropdown with template names
                 data.templates.forEach(template => {
                     let option = document.createElement("option");
                     option.value = template.id;
@@ -84,23 +80,21 @@
                 return;
             }
 
-        //     const BACKEND_URL = "https://crmbymjservices.com";  
-        //     try {
-        //         const response = await fetch(`${BACKEND_URL}/send-message`, {
-        //             method: "POST",
-        //             headers: { "Content-Type": "application/json" },
-        //             body: JSON.stringify({ template_id: selectedTemplate })
-        //         });
+            try {
+                const response = await fetch(`${VERCEL_BACKEND_URL}/send-message`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ template_id: selectedTemplate })
+                });
 
-        //         const result = await response.json();
-        //         alert(result.message || "Message sent successfully!");
-        //     } catch (error) {
-        //         console.error("Error sending message:", error);
-        //         alert("Failed to send message!");
-        //     }
+                const result = await response.json();
+                alert(result.message || "Message sent successfully!");
+            } catch (error) {
+                console.error("Error sending message:", error);
+                alert("Failed to send message!");
+            }
         }
 
-        // Run the function when the page loads
         document.addEventListener("DOMContentLoaded", loadTemplates);
     </script>
 </head>
