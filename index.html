@@ -7,8 +7,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             text-align: center;
+            background-color: #f4f4f4;
             padding: 20px;
         }
         .container {
@@ -18,13 +18,11 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             display: inline-block;
         }
-        select {
-            padding: 8px;
+        select, button {
+            padding: 10px;
             margin-top: 10px;
         }
         button {
-            padding: 10px 15px;
-            margin-top: 15px;
             background-color: #28a745;
             color: white;
             border: none;
@@ -36,22 +34,17 @@
         }
     </style>
     <script>
-        const VERCEL_BACKEND_URL = "https://wati-sendbutton-bf564gg73-shubhangis-projects-2553fb3e.vercel.app/";  // ✅ Replace with your actual Vercel backend URL
+        let currentPage = 1; // Track current page
 
-        async function loadTemplates() {
+        async function loadTemplates(page = 1) {
             try {
-                console.log("Fetching templates...");
-
-                const response = await fetch(`${VERCEL_BACKEND_URL}/get-templates`);
-                console.log("Response status:", response.status);
-
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-
+                const BACKEND_URL = "https://wati-sendbutton-bf564gg73-shubhangis-projects-2553fb3e.vercel.app";  // Replace with your Vercel domain
+                
+                // Fetch paginated templates
+                const response = await fetch(`${BACKEND_URL}/get-templates?page=${page}`);
+                if (!response.ok) throw new Error("Failed to load templates");
+                
                 const data = await response.json();
-                console.log("Received data:", data);
-
                 const templateDropdown = document.getElementById("templates");
                 templateDropdown.innerHTML = '<option value="">-- Select a Template --</option>';
 
@@ -62,8 +55,9 @@
                     templateDropdown.appendChild(option);
                 });
 
+                currentPage = data.page;
             } catch (error) {
-                console.error("Error fetching templates:", error);
+                console.error("Error loading templates:", error);
             }
         }
 
@@ -80,8 +74,9 @@
                 return;
             }
 
+            const BACKEND_URL = "https://your-vercel-app.vercel.app";  // Replace with your Vercel domain
             try {
-                const response = await fetch(`${VERCEL_BACKEND_URL}/send-message`, {
+                const response = await fetch(`${BACKEND_URL}/send-message`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ template_id: selectedTemplate })
@@ -95,7 +90,17 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", loadTemplates);
+        function nextPage() {
+            loadTemplates(currentPage + 1);
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                loadTemplates(currentPage - 1);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => loadTemplates());
     </script>
 </head>
 <body>
@@ -107,6 +112,9 @@
         </select>
         <p id="selectedTemplate"></p>
         <button onclick="sendMessage()">Send</button>
+        <br><br>
+        <button onclick="prevPage()">Previous</button>
+        <button onclick="nextPage()">Next</button>
     </div>
 </body>
 </html>
