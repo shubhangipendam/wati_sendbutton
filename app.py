@@ -1,14 +1,15 @@
 from flask import Flask, jsonify, render_template, request
 import requests
 from flask_cors import CORS
+from http.server import BaseHTTPRequestHandler
+import os 
 
 app = Flask(__name__)
 CORS(app)  # Allow cross-origin requests (needed for frontend)
 
 # ✅ Replace with your actual WATI API details
-WATI_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3MmI1ZDI5NC1mMGVmLTQ5MjctYmRlZS01NjE5MWZiNzM1OTgiLCJ1bmlxdWVfbmFtZSI6Imt1bGthcm5pcmFodWw4OEBnbWFpbC5jb20iLCJuYW1laWQiOiJrdWxrYXJuaXJhaHVsODhAZ21haWwuY29tIiwiZW1haWwiOiJrdWxrYXJuaXJhaHVsODhAZ21haWwuY29tIiwiYXV0aF90aW1lIjoiMDIvMjAvMjAyNSAxMDo0NDozOCIsInRlbmFudF9pZCI6IjEwNTUyMCIsImRiX25hbWUiOiJtdC1wcm9kLVRlbmFudHMiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBRE1JTklTVFJBVE9SIiwiZXhwIjoyNTM0MDIzMDA4MDAsImlzcyI6IkNsYXJlX0FJIiwiYXVkIjoiQ2xhcmVfQUkifQ.UgnjWDuRf6QOFjpoXxgN0tFfo7bQx-pTfqCXIseVGuc"
-WATI_API_URL = "https://live-mt-server.wati.io/105520/api/v1/getMessageTemplates"
-
+WATI_API_KEY = os.getenv("WATI_API_KEY")
+WATI_API_URL = os.getenv("WATI_API_URL")
 # ✅ Replace with your Zoho Bigin API details
 # ZOHO_ACCESS_TOKEN = "your_zoho_access_token"
 # ZOHO_BIGIN_API_URL = "https://www.zohoapis.com/bigin/v1/Contacts"
